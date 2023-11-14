@@ -1,0 +1,90 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Server en python</title>
+</head>
+
+<form method="post" id="frmMateria" data-idmateria="-1" data-accion="nuevo">
+    <div class="card text-bg-mb-3" style="width: 600px;  background-color: grey;">
+        <div class="card-header border-success">
+            <div  class="d-flex">
+                <div style="color: #fff;">Registro de Materias</div>
+                <div class="ms-auto">
+                    <button type="button" class="btn-close close" data-form="materias"></button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body" style="color: #fff;">
+            <div class="row p-1">
+                <div class="col-3">CODIGO:</div>
+                <div class="col-3">
+                    <input required type="text" name="txtCodigoMateria" id="txtCodigoMateria" class="form-control">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3">NOMBRE:</div>
+                <div class="col-6">
+                    <input required type="text" name="txtNombreMateria" id="txtNombreMateria" class="form-control">
+                </div>
+            </div>
+            <div class="row p-1">
+                <div class="col-3">UV:</div>
+                <div class="col-9">
+                    <input required type="text" name="txtUvMateria" id="txtUvMateria" class="form-control">
+                </div>
+           
+        </div>
+        <div class="card-footer bg-transparent border-success">
+            <div class="row">
+                <div class="col text-center">
+                    <input type="reset" value="Nuevo" class="btn btn-danger">
+                    <input type="submit" value="Guardar" class="btn btn-success" style="background-color: darkcyan;">
+                    <button id="btnBuscarMateria" class="btn btn-primary" style="background-color: navy;">Buscar Materias</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    btnBuscarMateria.addEventListener('click', event=>{
+        event.preventDefault();
+        abrirVentana('busqueda_materias');
+        $element.show();
+    });
+    frmMaterias.addEventListener("submit",event=>{
+        event.preventDefault();
+        let datos = {
+            accion : frmMaterias.dataset.accion,
+            idmateria: frmMaterias.dataset.idmateria,
+            codigo: txtCodigoMaterias.value,
+            nombre: txtNombreMaterias.value,
+            Uv: txtUvMaterias.value,
+            
+        };
+        fetch("/materia", {
+            method: "POST",
+            headers:{
+                'Content-Type': 'appliction/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },    
+            body: JSON.stringify(datos)
+        }).then(resp=>resp.json())
+        .then(respuesta=>{
+            if( respuesta.msg=="ok" ){
+                limpiarDatosMaterias();
+                mostrarDatosMaterias();
+            }
+        });
+    });
+    
+    function limpiarDatosMaterias(){
+        frmMaterias.dataset.accion = "nuevo";
+        frmMaterias.dataset.idmateria = "-1";
+        txtCodigoMaterias.value = "";
+        txtNombreMaterias.value = "";
+        txtUvMaterias.value = "";
+        
+    }
+</script>
